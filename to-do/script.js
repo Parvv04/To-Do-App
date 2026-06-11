@@ -8,26 +8,45 @@ if(localStorage.getItem("tasks") !== null){
     tasks =JSON.parse(localStorage.getItem("tasks"));
 
     //For each task in the tasks array, create a task element with checkbox, text and delete button and append it to the output container
-    tasks.forEach(function(taskText){
-        createTask(taskText);
+    tasks.forEach(function(taskObj){
+        createTask(taskObj);
     });
 }
 
+function handleCheckBox(checkbox){
 
+    let taskText = checkbox.value;
+    let index = tasks.findIndex(task => task.text === taskText);
+
+    //If the checkbox is checked, strike through the text and update the completed property of the task object in the tasks array to true, otherwise remove the strike through and update the completed property to false
+    if(checkbox.checked){
+        checkbox.parentElement.querySelector("p").style.textDecoration = "line-through";
+        tasks[index].completed = true;
+    }
+    else{
+        checkbox.parentElement.querySelector("p").style.textDecoration = "none";
+        tasks[index].completed = false;
+    }
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
 //function to create a task
-function createTask(taskText){
+function createTask(taskObject){
 
         //create a task element with checkbox, text and delete button
         const task = document.createElement("div");
         task.classList.add("task");
 
         const p = document.createElement("p");
-        p.textContent = taskText;
+        p.textContent = taskObject.text;
 
         const checkbox = document.createElement("input");
         checkbox.classList.add("checkbox");
         checkbox.type = "checkbox";
         checkbox.value = p.textContent;
+        checkbox.checked = taskObject.completed;
+        if(taskObject.completed){
+            p.style.textDecoration = "line-through";
+        }
 
         const button = document.createElement("button");
         button.classList.add("delete");
@@ -57,12 +76,7 @@ function createTask(taskText){
 
         //Add event listener to the checkbox to strike through the text when checked and remove strike through when unchecked
         checkbox.addEventListener("change", function(){
-            if(checkbox.checked){
-                p.style.textDecoration = "line-through";
-            }
-            else{
-                p.style.textDecoration = "none";
-            }
+            handleCheckBox(checkbox);
         })        
     }
 
@@ -74,10 +88,16 @@ input.addEventListener("keydown", function(event){
             return;
         }
 
-        //input.value was set to empty string in the createTask function, so we need to save the task text before calling the createTask function
-        createTask(input.value.trim());
+        let taskObj = {
+            text: input.value.trim(),
+            completed: false
+        };
 
-        tasks.push(input.value.trim());
+        //input.value was set to empty string in the createTask function, so we need to save the task text before calling the createTask function
+        createTask(taskObj);
+
+        tasks.push(taskObj);
+
         localStorage.setItem("tasks", JSON.stringify(tasks));
 
         //Clear the input field after adding the task
@@ -93,7 +113,7 @@ output.addEventListener("click", function(event){
 
         //Get the task text from the parent element of the delete button, find the index of the task text in the tasks array and remove it from the array
         let taskText = event.target.parentElement.querySelector("p").textContent;
-        let index = tasks.indexOf(taskText);
+        let index = tasks.findIndex(task => task.text === taskText);
 
         //splice is used to remove the task from the tasks array at the specified index
         tasks.splice(index, 1);
