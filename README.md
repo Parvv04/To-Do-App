@@ -40,12 +40,6 @@ todo-list/
 
 ---
 
-## 📸 Preview
-
-<img width="1855" height="1108" alt="Todo List Preview" src="https://github.com/user-attachments/assets/d8ae83bc-3616-4587-ba38-d952254bfa7e" />
-
----
-
 ## ⚡ How It Works
 
 ### Adding a Task
