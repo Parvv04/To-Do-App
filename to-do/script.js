@@ -59,7 +59,7 @@ function createTask(taskObject){
         output.appendChild(task);
 
         //If there is no clear button, create one and add event listener to it
-        if(document.querySelectorAll(".clear").length ===0){
+        if(document.querySelectorAll(".clear").length === 0){
             const btn = document.createElement("button");
             btn.classList.add("clear");
             btn.textContent = "Clear All";
